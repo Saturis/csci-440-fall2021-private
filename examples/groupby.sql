@@ -15,9 +15,10 @@ FROM tracks
 GROUP BY AlbumID;
 
 -- Select all AlbumID FKs from the tracks table
-SELECT AlbumID, COUNT(*) as TrackCount
+SELECT a.Title, tracks.AlbumID, COUNT(*) as TrackCount
 FROM tracks
-GROUP BY AlbumID;
+JOIN albums a on tracks.AlbumID = a.AlbumID
+GROUP BY tracks.AlbumID;
 
 -- Select all AlbumID FKs from the tracks table
 SELECT tracks.AlbumID, Title, COUNT(*) as TrackCount
