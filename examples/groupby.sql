@@ -64,11 +64,13 @@ SELECT artists.Name,
        COUNT(tracks.TrackId) as Tracks,
        COUNT(DISTINCT albums.AlbumId) as Albums,
        SUM(tracks.Milliseconds) as Milliseconds
+       -- AVG(tracks.Milliseconds) as AverageRuntime
 FROM tracks
          JOIN albums on tracks.AlbumId = albums.AlbumId
          JOIN artists on albums.ArtistId = artists.ArtistId
 GROUP BY albums.ArtistId;
 
+-- Find all artists that have more than 10 tracks
 SELECT artists.Name,
        COUNT(tracks.TrackId) as Tracks,
        COUNT(DISTINCT albums.AlbumId) as Albums,
