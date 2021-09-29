@@ -28,8 +28,9 @@ public class Homework1 extends DBTest {
         List<Map<String, Object>> results = executeSQL(
                 "SELECT *\n" +
                         "FROM artists\n" +
-                        "NATURAL JOIN albums\n" +
-                        "WHERE albums.AlbumId > 1;");
+                        "JOIN albums ON artists.ArtistId = albums.ArtistId\n" +
+                        "GROUP BY artists.ArtistId\n" +
+                        "HAVING COUNT(AlbumId) > 2;");
 
         assertEquals(56, results.size());
         assertEquals("AC/DC", results.get(0).get("Name"));
