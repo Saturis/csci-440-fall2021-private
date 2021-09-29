@@ -14,7 +14,9 @@ public class Homework1 extends DBTest {
      * Write a query in the string below that returns all artists that have an 'A' in their name
      */
     void selectArtistsWhoseNameHasAnAInIt(){
-        List<Map<String, Object>> results = executeSQL("SELECT * FROM artists");
+        List<Map<String, Object>> results = executeSQL("SELECT *\n" +
+                "FROM artists\n" +
+                "WHERE name LIKE \"%A%\";");
         assertEquals(211, results.size());
     }
 
