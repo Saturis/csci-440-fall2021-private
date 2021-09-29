@@ -25,8 +25,7 @@ public class Homework1 extends DBTest {
      * Write a query in the string below that returns all artists that have more than one album
      */
     void selectAllArtistsWithMoreThanOneAlbum(){
-        List<Map<String, Object>> results = executeSQL(
-                "SELECT *\n" +
+        List<Map<String, Object>> results = executeSQL("SELECT *\n" +
                         "FROM artists\n" +
                         "JOIN albums ON artists.ArtistId = albums.ArtistId\n" +
                         "GROUP BY artists.ArtistId\n" +
