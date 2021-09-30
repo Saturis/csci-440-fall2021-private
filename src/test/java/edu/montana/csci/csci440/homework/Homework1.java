@@ -26,10 +26,10 @@ public class Homework1 extends DBTest {
      */
     void selectAllArtistsWithMoreThanOneAlbum(){
         List<Map<String, Object>> results = executeSQL("SELECT *\n" +
-                        "FROM artists\n" +
-                        "JOIN albums ON artists.ArtistId = albums.ArtistId\n" +
-                        "GROUP BY artists.ArtistId\n" +
-                        "HAVING COUNT(AlbumId) > 1;");
+                "FROM artists\n" +
+                "JOIN albums ON artists.ArtistId = albums.ArtistId\n" +
+                "GROUP BY artists.ArtistId\n" +
+                "HAVING COUNT(AlbumId) > 1");
 
         assertEquals(56, results.size());
         assertEquals("AC/DC", results.get(0).get("Name"));
