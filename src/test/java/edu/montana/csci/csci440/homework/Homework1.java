@@ -25,7 +25,8 @@ public class Homework1 extends DBTest {
      * Write a query in the string below that returns all artists that have more than one album
      */
     void selectAllArtistsWithMoreThanOneAlbum(){
-        List<Map<String, Object>> results = executeSQL("SELECT *\n" +
+         List<Map<String, Object>> results = executeSQL(
+                "SELECT *\n" +
                         "FROM artists\n" +
                         "JOIN albums ON artists.ArtistId = albums.ArtistId\n" +
                         "GROUP BY artists.ArtistId\n" +
@@ -42,8 +43,10 @@ public class Homework1 extends DBTest {
          */
     void selectTheTrackAndAlbumAndArtistForAllTracksLongerThanSixMinutes() {
         List<Map<String, Object>> results = executeSQL(
-                "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName FROM tracks " +
-                        "-- NEED TO DO SOME JOINS HERE KIDS");
+                "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName\n" +
+                        "FROM tracks\n" +
+                        "JOIN albums a on a.AlbumId = tracks.AlbumId\n" +
+                        "WHERE sum(tracks.Milliseconds) > 6000000;");
 
         assertEquals(623, results.size());
 
