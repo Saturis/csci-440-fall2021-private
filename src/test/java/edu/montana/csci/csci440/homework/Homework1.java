@@ -25,11 +25,11 @@ public class Homework1 extends DBTest {
      * Write a query in the string below that returns all artists that have more than one album
      */
     void selectAllArtistsWithMoreThanOneAlbum(){
-        List<Map<String, Object>> results = executeSQL("SELECT *\n" +
-                "FROM artists\n" +
-                "JOIN albums ON artists.ArtistId = albums.ArtistId\n" +
-                "GROUP BY artists.ArtistId\n" +
-                "HAVING COUNT(AlbumId) > 1;");
+        List<Map<String, Object>> results = executeSQL("SELECT * " +
+                "FROM artists " +
+                "JOIN albums ON artists.ArtistId = albums.ArtistId " +
+                "GROUP BY artists.ArtistId " +
+                "HAVING COUNT(AlbumId) > 1;\n");
 
         assertEquals(56, results.size());
         assertEquals("AC/DC", results.get(0).get("Name"));
@@ -42,8 +42,20 @@ public class Homework1 extends DBTest {
          */
     void selectTheTrackAndAlbumAndArtistForAllTracksLongerThanSixMinutes() {
         List<Map<String, Object>> results = executeSQL(
-                "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName FROM tracks " +
-                        "-- NEED TO DO SOME JOINS HERE KIDS");
+                "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName FROM tracks\n" +
+                        "    JOIN albums a on tracks.AlbumId = a.AlbumId\n" +
+                        "    JOIN artists a2 on a.ArtistId = a2.ArtistId\n" +
+                        "GROUP BY tracks.Name\n" +
+                        "HAVING sum(tracks.Milliseconds) > 6000000;\n" +
+                        "\n" +
+                        "\n" +
+                        "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName FROM tracks\n" +
+                        "\n" +
+                        "JOIN albums on tracks.AlbumId = albums.AlbumId\n" +
+                        "\n" +
+                        "JOIN artists on albums.ArtistId = artists.ArtistId\n" +
+                        "\n" +
+                        "WHERE tracks.Milliseconds > 360000;");
 
         assertEquals(623, results.size());
 
