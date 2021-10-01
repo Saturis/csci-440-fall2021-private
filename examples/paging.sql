@@ -63,3 +63,13 @@ SELECT main.employees.FirstName as FirstName,
        bosses.EmployeeId as BossEmployeeId
 FROM main.employees
          JOIN main.employees AS bosses ON main.employees.ReportsTo = bosses.EmployeeId;
+
+
+
+
+
+
+
+SELECT *
+FROM albums
+WHERE title = 'Facelift  ' COLLATE RTRIM;
