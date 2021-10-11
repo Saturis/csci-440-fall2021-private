@@ -73,3 +73,14 @@ FROM main.employees
 SELECT *
 FROM albums
 WHERE title = 'Facelift  ' COLLATE RTRIM;
+
+
+
+
+SELECT artists.Name,
+       COUNT(tracks.TrackId) as Tracks
+FROM tracks
+         JOIN albums on tracks.AlbumId = albums.AlbumId
+         JOIN artists on albums.ArtistId = artists.ArtistId
+GROUP BY albums.ArtistId
+HAVING Tracks > 2;
