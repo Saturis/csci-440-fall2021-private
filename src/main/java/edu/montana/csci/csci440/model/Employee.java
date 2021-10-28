@@ -159,7 +159,7 @@ public class Employee extends Model {
         return all(0, Integer.MAX_VALUE);
     }
 
-    public static List<Employee> all(int page, int count) {
+    public static List<Employee> all(int page, int count) {//TODO implement paging, 8 employees divided by number per page to get total pages
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT * FROM employees LIMIT ?"
