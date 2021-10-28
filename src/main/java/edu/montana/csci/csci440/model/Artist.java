@@ -72,7 +72,7 @@ public class Artist extends Model {
                  PreparedStatement stmt = conn.prepareStatement(
                          "UPDATE artists SET Name=? WHERE Name=? AND ArtistId=?")) {
                 stmt.setString(1, this.getName());
-                stmt.setString(2, ?); //TODO need to get the previous name from the DB
+                //stmt.setString(2, ?); //TODO need to get the previous name from the DB
                 stmt.setLong(3, this.getArtistId());
                 int updatedRows = stmt.executeUpdate(); //TODO use this number to determine if the update was successful or not
                 return true;

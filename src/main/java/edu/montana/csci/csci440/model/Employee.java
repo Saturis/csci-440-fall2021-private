@@ -176,6 +176,7 @@ public class Employee extends Model {
         }
     }
 
+    //TODO
     public static Employee findByEmail(String newEmailAddress) {
         throw new UnsupportedOperationException("Implement me");
     }
