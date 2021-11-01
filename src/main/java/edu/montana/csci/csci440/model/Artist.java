@@ -38,7 +38,7 @@ public class Artist extends Model {
 
     public String getName() {
         return name;
-    }
+    }  //TODO: implement Optimistic Concurrency for Name (double check this for sure) Lecture 23 43:00 mins in
 
     public void setName(String name) {
         this.name = name;
