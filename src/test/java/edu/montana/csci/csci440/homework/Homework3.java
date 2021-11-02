@@ -17,7 +17,7 @@ public class Homework3 extends DBTest {
 
     @Test
     /*
-     * Use a transaction to safely move milliseconds from one track to anotherls
+     * Use a transaction to safely move milliseconds from one track to another
      *
      * You will need to use the JDBC transaction API, outlined here:
      *
@@ -87,6 +87,4 @@ public class Homework3 extends DBTest {
         List<Map<String, Object>> tracks = executeSQL("" );
         assertEquals(21, tracks.size());
     }
-
-
 }

@@ -15,7 +15,7 @@ public class Homework2 extends DBTest {
      * Create a view tracksPlus to display the artist, song title, album, and genre for all tracks.
      */
     public void createTracksPlusView(){
-        //TODO fill this in
+        //T ODO fill this in
         executeDDL("CREATE VIEW tracksPlus");
 
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
@@ -35,7 +35,7 @@ public class Homework2 extends DBTest {
      * Create a table grammy_category
      */
     public void createGrammyInfoTable(){
-        //TODO fill these in
+        //T ODO fill these in
         executeDDL("create table grammy_categories");
         executeDDL("create table grammy_infos");
 
@@ -60,7 +60,7 @@ public class Homework2 extends DBTest {
     public void bulkInsertGenres(){
         Integer before = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
 
-        //TODO fill this in
+        //T ODO fill this in
         executeUpdate("INSERT");
 
         Integer after = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
