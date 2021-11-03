@@ -127,7 +127,16 @@ public class TrackTest extends DBTest {
         // cache should have been invalidated
         count = Track.count();
         assertEquals(initialCount + 4, DB.getConnectionCount());
-
     }
 
+
+    @ Test
+    void findOnTrackWorksProperly(){
+        List<Track> results = Track.where("TrackId = ?", 1);
+        assertEquals(1, results.get(0).getAlbumId());
+
+        results = Track.where("Milliseconds > ?", 300000);
+        //assertEquals(1, results.get(0).getMilliseconds());
+        System.out.println(results);
+    }
 }

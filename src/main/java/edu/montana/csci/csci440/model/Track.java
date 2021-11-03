@@ -77,6 +77,24 @@ public class Track extends Model {
         }
     }
 
+    public static List<Track> where(String whereClause, Object... args) {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE " + whereClause)) {
+            List<Track> list = new LinkedList<>();
+            for (int i = 0; i < args.length; i++) {
+                Object arg = args[i];
+                stmt.setObject(i + 1, arg);
+            }
+            ResultSet results = stmt.executeQuery();
+            while (results.next()) {
+                list.add(new Track(results));
+            }
+            return list;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
     public Album getAlbum() {
         return Album.find(albumId);
     }

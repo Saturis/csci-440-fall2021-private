@@ -9,8 +9,9 @@ import java.util.Map;
 public class EmployeeHelper {
 
     public static String makeEmployeeTree() {
-        // TODO, change this to use a single query operation to get all employees
-        Employee employee = Employee.find(1); // root employee
+        // T ODO, change this to use a single query operation to get all employees
+        // Employee employee = Employee.find(1); // root employee
+        Employee employee = (Employee) Employee.all();
         // and use this data structure to maintain reference information needed to build the tree structure
         Map<Long, List<Employee>> employeeMap = new HashMap<>();
         return "<ul>" + makeTree(employee, employeeMap) + "</ul>";
