@@ -109,7 +109,7 @@ public class TrackTest extends DBTest {
     }
 
     @Test
-    void trackCountIsCachedInRedis(){
+    void trackCountIsCachedInRedis(){  //Ok if broken for now
 
         long initialCount = DB.getConnectionCount();
         Long count = Track.count();
@@ -128,7 +128,6 @@ public class TrackTest extends DBTest {
         count = Track.count();
         assertEquals(initialCount + 4, DB.getConnectionCount());
     }
-
 
     @ Test
     void findOnTrackWorksProperly(){

@@ -86,7 +86,7 @@ public class Employee extends Model {
             return false;
         }
     }
-
+//TODO: move all overrides to other classes and modify
     @Override
     public void delete() {
         try (Connection conn = DB.connect();

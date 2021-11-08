@@ -49,7 +49,7 @@ public class Track extends Model {
 
     public static Track find(long i) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE TrackId=?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE TrackId=?")) { //TODO: Get more elaborate and make only one connection to the DB.  We want to get the artist name as well. **JOIN**
             stmt.setLong(1, i);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
