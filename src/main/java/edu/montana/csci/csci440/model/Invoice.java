@@ -127,4 +127,69 @@ public class Invoice extends Model {
             throw new RuntimeException(sqlException);
         }
     }
+
+    @Override
+    public boolean verify() {
+        _errors.clear(); // clear any existing errors
+        if (total == null || "".equals(total)) {
+            addError("Invoice Total can't be null or blank!");
+        }
+        return !hasErrors();
+    }
+
+    @Override
+    public boolean update() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE employees SET BillingAddress=?, BillingCity=?, BillingState=?, BillingCountry=?, BillingPostalCode=? WHERE InvoiceId=?")) {
+                stmt.setString(1, this.getBillingAddress());
+                stmt.setString(2, this.getBillingCity());
+                stmt.setString(3, this.getBillingState());
+                stmt.setString(4, this.getBillingCountry());
+                stmt.setString(5, this.getBillingPostalCode());
+                stmt.setLong(6, this.getInvoiceId());
+                stmt.executeUpdate();
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean create() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "INSERT INTO invoices (BillingAddress, BillingCity, BillingState, BillingCountry, BillingPostalCode) VALUES (?, ?, ?, ?, ?)")) {
+                stmt.setString(1, this.getBillingAddress());
+                stmt.setString(2, this.getBillingCity());
+                stmt.setString(3, this.getBillingState());
+                stmt.setString(4, this.getBillingCountry());
+                stmt.setString(5, this.getBillingPostalCode());
+                stmt.executeUpdate();
+                invoiceId = DB.getLastID(conn);
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void delete() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "DELETE FROM invoices WHERE InvoiceId=?")) {
+            stmt.setLong(1, this.getInvoiceId());
+            stmt.executeUpdate();
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
 }

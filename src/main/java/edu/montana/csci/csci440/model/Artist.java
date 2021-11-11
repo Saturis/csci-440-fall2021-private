@@ -65,6 +65,30 @@ public class Artist extends Model {
         }
     }
 
+    public static Artist find(long i) {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM artists WHERE ArtistId=?")) {
+            stmt.setLong(1, i);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return new Artist(results);
+            } else {
+                return null;
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public boolean verify() {
+        _errors.clear(); // clear any existing errors
+        if (name == null || "".equals(name)) {
+            addError("Artist Name can't be null or blank!");
+        }
+        return !hasErrors();
+    }
+
     @Override
     public boolean update() {
         if (verify()) {
@@ -84,19 +108,33 @@ public class Artist extends Model {
         }
     }
 
-    public static Artist find(long i) {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM artists WHERE ArtistId=?")) {
-            stmt.setLong(1, i);
-            ResultSet results = stmt.executeQuery();
-            if (results.next()) {
-                return new Artist(results);
-            } else {
-                return null;
+    @Override
+    public boolean create() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "INSERT INTO artists (Name) VALUES (?)")) {
+                stmt.setString(1, this.getName());
+                stmt.executeUpdate();
+                artistId = DB.getLastID(conn);
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
             }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void delete() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "DELETE FROM artists WHERE ArtistId=?")) {
+            stmt.setLong(1, this.getArtistId());
+            stmt.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
     }
-
 }
