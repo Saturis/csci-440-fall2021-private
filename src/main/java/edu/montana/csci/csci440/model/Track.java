@@ -49,7 +49,7 @@ public class Track extends Model {
 
     public static Track find(long i) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE TrackId=?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE TrackId=?")) { //TODO: Get more elaborate and make only one connection to the DB.  We want to get the artist name as well. **JOIN**
             stmt.setLong(1, i);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
@@ -72,6 +72,24 @@ public class Track extends Model {
             } else {
                 throw new IllegalStateException("Should find a count!");
             }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    public static List<Track> where(String whereClause, Object... args) {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE " + whereClause)) {
+            List<Track> list = new LinkedList<>();
+            for (int i = 0; i < args.length; i++) {
+                Object arg = args[i];
+                stmt.setObject(i + 1, arg);
+            }
+            ResultSet results = stmt.executeQuery();
+            while (results.next()) {
+                list.add(new Track(results));
+            }
+            return list;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }

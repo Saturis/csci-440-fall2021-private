@@ -48,10 +48,10 @@ public class Artist extends Model {
         return all(0, Integer.MAX_VALUE);
     }
 
-    public static List<Artist> all(int page, int count) {
+    public static List<Artist> all(int page, int count) { //TODO: take in page and count
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM artists LIMIT ?"
+                     "SELECT * FROM artists LIMIT ?" // Use OFFSET and LIMIT
              )) {
             stmt.setInt(1, count);
             ResultSet results = stmt.executeQuery();
@@ -107,6 +107,24 @@ public class Artist extends Model {
             return false;
         }
     }
+
+    /*@Override
+    public boolean update() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE artists SET Name=? WHERE ArtistId=? AND Name=?")) { //Has the name been changed, store the original name from the DB
+                stmt.setString(1, this.getName());
+                stmt.setLong(2, this.getArtistId()); // may not need this line
+                int updatedCount = stmt.executeUpdate();
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }*/
 
     @Override
     public boolean create() {
