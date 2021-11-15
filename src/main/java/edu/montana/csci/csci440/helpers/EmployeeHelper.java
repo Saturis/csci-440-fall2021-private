@@ -14,18 +14,18 @@ import java.util.Map;
 
 public class EmployeeHelper {
 
-    public static String makeEmployeeTree() {
+    /*public static String makeEmployeeTree() {
         // T ODO, change this to use a single query operation to get all employees
         // Employee employee = Employee.find(1); // root employee
         Employee employee = (Employee) Employee.all();
         // and use this data structure to maintain reference information needed to build the tree structure
         Map<Long, List<Employee>> employeeMap = new HashMap<>();
         return "<ul>" + makeTree(employee, employeeMap) + "</ul>";
-    }
+    }*/
 
     // TODO - currently this method just uses the employee.getReports() function, which
     //  issues a query.  Change that to use the employeeMap variable instead
-    public static String makeTree(Employee employee, Map<Long, List<Employee>> employeeMap) {
+    /*public static String makeTree(Employee employee, Map<Long, List<Employee>> employeeMap) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT * FROM employees"
@@ -46,5 +46,5 @@ public class EmployeeHelper {
             list += makeTree(report, employeeMap);
         }
         return list + "</ul></li>";
-    }
+    }*/
 }

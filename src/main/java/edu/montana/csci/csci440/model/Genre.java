@@ -47,6 +47,24 @@ public class Genre extends Model {
         }
     }
 
+    public static List<Genre> all(int page, int count) {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM genres LIMIT ? OFFSET ?"
+             )) {
+            stmt.setInt(1, count);
+            stmt.setInt(2, (page - 1) * count);
+            ResultSet results = stmt.executeQuery();
+            List<Genre> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Genre(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
     @Override
     public boolean verify() {
         _errors.clear(); // clear any existing errors

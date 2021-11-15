@@ -23,7 +23,6 @@ public class Playlist extends Model {
         playlistId = results.getLong("PlaylistId");
     }
 
-
     public List<Track> getTracks(){
         // T O D O implement, order by track name
         try (Connection conn = DB.connect();
@@ -65,9 +64,10 @@ public class Playlist extends Model {
     public static List<Playlist> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM playlists LIMIT ?"
+                     "SELECT * FROM playlists LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page - 1) * count);
             ResultSet results = stmt.executeQuery();
             List<Playlist> resultList = new LinkedList<>();
             while (results.next()) {

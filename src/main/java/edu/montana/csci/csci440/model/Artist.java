@@ -48,12 +48,13 @@ public class Artist extends Model {
         return all(0, Integer.MAX_VALUE);
     }
 
-    public static List<Artist> all(int page, int count) { //TODO: take in page and count
+    public static List<Artist> all(int page, int count) { //T ODO: take in page and count
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM artists LIMIT ?" // Use OFFSET and LIMIT
+                     "SELECT * FROM artists LIMIT ? OFFSET ?" // Use OFFSET and LIMIT
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page - 1) * count);
             ResultSet results = stmt.executeQuery();
             List<Artist> resultList = new LinkedList<>();
             while (results.next()) {
@@ -96,7 +97,7 @@ public class Artist extends Model {
                  PreparedStatement stmt = conn.prepareStatement(
                          "UPDATE artists SET Name=? WHERE Name=? AND ArtistId=?")) {
                 stmt.setString(1, this.getName());
-                //stmt.setString(2, ?); //TODO need to get the previous name from the DB
+                stmt.setString(2, this.getName()); //T ODO need to get the previous name from the DB
                 stmt.setLong(3, this.getArtistId());
                 int updatedRows = stmt.executeUpdate(); //TODO use this number to determine if the update was successful or not
                 return true;

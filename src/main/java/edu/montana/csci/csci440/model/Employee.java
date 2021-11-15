@@ -86,7 +86,7 @@ public class Employee extends Model {
             return false;
         }
     }
-//TODO: move all overrides to other classes and modify
+
     @Override
     public void delete() {
         try (Connection conn = DB.connect();
@@ -159,12 +159,13 @@ public class Employee extends Model {
         return all(0, Integer.MAX_VALUE);
     }
 
-    public static List<Employee> all(int page, int count) {//TODO implement paging, 8 employees divided by number per page to get total pages
+    public static List<Employee> all(int page, int count) {//T ODO implement paging, 8 employees divided by number per page to get total pages
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM employees LIMIT ?"
+                     "SELECT * FROM employees LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page - 1) * count);
             ResultSet results = stmt.executeQuery();
             List<Employee> resultList = new LinkedList<>();
             while (results.next()) {
