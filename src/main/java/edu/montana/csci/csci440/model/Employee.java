@@ -17,8 +17,9 @@ public class Employee extends Model {
     private String email;
     private String title;
 
-    public Employee() {
+    public Employee()  {
         // new employee for insert
+
     }
 
     private Employee(ResultSet results) throws SQLException {
@@ -72,10 +73,11 @@ public class Employee extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "INSERT INTO employees (FirstName, LastName, Email) VALUES (?, ?, ?)")) {
+                         "INSERT INTO employees (FirstName, LastName, Title, Email) VALUES (?, ?, ?, ?)")) {
                 stmt.setString(1, this.getFirstName());
                 stmt.setString(2, this.getLastName());
-                stmt.setString(3, this.getEmail());
+                stmt.setString(3, this.getTitle());
+                stmt.setString(4, this.getEmail());
                 stmt.executeUpdate();
                 employeeId = DB.getLastID(conn);
                 return true;
@@ -110,6 +112,8 @@ public class Employee extends Model {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getTitle() { return title; }
 
     public String getEmail() {
         return email;

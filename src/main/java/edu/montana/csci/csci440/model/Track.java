@@ -277,10 +277,11 @@ public class Track extends Model {
     public static List<Track> all(int page, int count, String orderBy) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM tracks LIMIT ? OFFSET ?"
+                     "SELECT * FROM tracks ORDER BY ? LIMIT ? OFFSET ?"
              )) {
-            stmt.setInt(1, count);
-            stmt.setInt(2, (page - 1) * count);
+            stmt.setString(1, orderBy);
+            stmt.setInt(2, count);
+            stmt.setInt(3, (page - 1) * count);
             ResultSet results = stmt.executeQuery();
             List<Track> resultList = new LinkedList<>();
             while (results.next()) {

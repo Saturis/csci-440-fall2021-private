@@ -76,6 +76,7 @@ public class ArtistTest extends DBTest {
         artist.update();
         assertEquals(newName, Artist.find(1).getName());
     }
+
     @Test
     void testImplementsUpdate() throws NoSuchMethodException {
         Class<Artist> artistClass = Artist.class;
