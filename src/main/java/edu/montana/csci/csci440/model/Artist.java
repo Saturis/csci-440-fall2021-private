@@ -100,6 +100,9 @@ public class Artist extends Model {
                 stmt.setString(2, this.getName()); //T ODO need to get the previous name from the DB
                 stmt.setLong(3, this.getArtistId());
                 int updatedRows = stmt.executeUpdate(); //TODO use this number to determine if the update was successful or not
+                if (updatedRows > 0) {
+                    return true;
+                }
                 return true;
             } catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
