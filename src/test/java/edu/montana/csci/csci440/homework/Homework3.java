@@ -17,7 +17,7 @@ public class Homework3 extends DBTest {
 
     @Test
     /*
-     * Use a transaction to safely move milliseconds from one track to another ls
+     * Use a transaction to safely move milliseconds from one track to another
      *
      * You will need to use the JDBC transaction API, outlined here:
      *
@@ -33,28 +33,22 @@ public class Homework3 extends DBTest {
 
         try(Connection connection = DB.connect()){
             connection.setAutoCommit(false);
-            PreparedStatement subtract = connection.prepareStatement("BEGIN TRANSACTION;\n" +
-                    "\n" +
-                    "UPDATE tracks\n" +
-                    "SET Milliseconds=(Milliseconds - 10)\n" +
-                    "WHERE TrackId = 1;\n" +
-                    "\n" +
-                    "COMMIT;");
-            subtract.setLong(1, 0);
-            subtract.setLong(2, 0);
+            PreparedStatement subtract = connection.prepareStatement("UPDATE tracks\n" +
+                    "SET Milliseconds = ?\n" +
+                    "WHERE TrackId = ?;\n");
+            subtract.setLong(1, (track1InitialTime - 10));
+            subtract.setLong(2, 1);
             subtract.execute();
 
-            PreparedStatement add = connection.prepareStatement("BEGIN TRANSACTION;\n" +
-                    "UPDATE tracks\n" +
-                    "SET Milliseconds=(Milliseconds +10)\n" +
-                    "WHERE TrackId = 2;\n" +
-                    "\n" +
-                    "COMMIT;");
-            subtract.setLong(1, 0);
-            subtract.setLong(2, 0);
+            PreparedStatement add = connection.prepareStatement("UPDATE tracks\n" +
+                    "SET Milliseconds = ?\n" +
+                    "WHERE TrackId = ?;\n");
+            subtract.setLong(1, (track2InitialTime + 10));
+            subtract.setLong(2, 2);
             subtract.execute();
 
             // commit with the connection
+            connection.commit();
         }
 
         // refresh tracks from db
@@ -77,18 +71,21 @@ public class Homework3 extends DBTest {
     public void selectPopularTracksAndTheirAlbums() throws SQLException {
 
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("SELECT DISTINCT *\n" +
+        List<Map<String, Object>> tracks = executeSQL("SELECT COUNT(invoice_items.TrackId), tracks.TrackId\n" +
                 "FROM invoice_items\n" +
                 "    JOIN tracks on invoice_items.TrackId = tracks.TrackId\n" +
-                "WHERE invoice_items.Quantity > 1;");
+                "GROUP BY tracks.TrackId\n" +
+                "    HAVING COUNT(invoice_items.TrackId) > 1");
         assertEquals(256, tracks.size());
 
         // HINT: join to tracks and invoice items and do a group by/having to get the right answer
         //       note: you will need to use the DISTINCT operator to get the right result!
-        List<Map<String, Object>> albums = executeSQL("SELECT *\n" +
-                "FROM tracks\n" +
-                "    JOIN invoice_items on tracks.TrackId = invoice_items.TrackId\n" +
-                "GROUP BY invoice_items.Quantity > 1;");
+        List<Map<String, Object>> albums = executeSQL("SELECT DISTINCT albums.AlbumId\n" +
+                "FROM invoice_items\n" +
+                "    JOIN tracks on invoice_items.TrackId = tracks.TrackId\n" +
+                "    JOIN albums on tracks.AlbumId = albums.AlbumId\n" +
+                "GROUP BY albums.AlbumId, tracks.TrackId\n" +
+                "    HAVING COUNT(invoice_items.TrackId) > 1;");
         assertEquals(166, albums.size());
     }
 
@@ -101,12 +98,7 @@ public class Homework3 extends DBTest {
      * */
     public void selectCustomersMeetingCriteria() throws SQLException {
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("SELECT Email\n" +
-                "FROM customers\n" +
-                "WHERE SupportRepId = (SELECT name\n" +
-                "                    FROM genres\n" +
-                "                    WHERE name=\"Rock\")\n" +
-                "AND SupportRepId=\"Jane Peacock\";" );
+        List<Map<String, Object>> tracks = executeSQL("" );
         assertEquals(21, tracks.size());
     }
 
