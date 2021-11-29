@@ -17,7 +17,7 @@ public class Homework3 extends DBTest {
 
     @Test
     /*
-     * Use a transaction to safely move milliseconds from one track to anotherls
+     * Use a transaction to safely move milliseconds from one track to another ls
      *
      * You will need to use the JDBC transaction API, outlined here:
      *
@@ -33,12 +33,23 @@ public class Homework3 extends DBTest {
 
         try(Connection connection = DB.connect()){
             connection.setAutoCommit(false);
-            PreparedStatement subtract = connection.prepareStatement("TODO");
+            PreparedStatement subtract = connection.prepareStatement("BEGIN TRANSACTION;\n" +
+                    "\n" +
+                    "UPDATE tracks\n" +
+                    "SET Milliseconds=(Milliseconds - 10)\n" +
+                    "WHERE TrackId = 1;\n" +
+                    "\n" +
+                    "COMMIT;");
             subtract.setLong(1, 0);
             subtract.setLong(2, 0);
             subtract.execute();
 
-            PreparedStatement add = connection.prepareStatement("TODO");
+            PreparedStatement add = connection.prepareStatement("BEGIN TRANSACTION;\n" +
+                    "UPDATE tracks\n" +
+                    "SET Milliseconds=(Milliseconds +10)\n" +
+                    "WHERE TrackId = 2;\n" +
+                    "\n" +
+                    "COMMIT;");
             subtract.setLong(1, 0);
             subtract.setLong(2, 0);
             subtract.execute();
@@ -57,7 +68,7 @@ public class Homework3 extends DBTest {
     /*
      * Select tracks that have been sold more than once (> 1)
      *
-     * Select the albumbs that have tracks that have been sold more than once (> 1)
+     * Select the albums that have tracks that have been sold more than once (> 1)
      *   NOTE: This is NOT the same as albums whose tracks have been sold more than once!
      *         An album could have had three tracks, each sold once, and should not be included
      *         in this result.  It should only include the albums of the tracks found in the first
@@ -66,12 +77,18 @@ public class Homework3 extends DBTest {
     public void selectPopularTracksAndTheirAlbums() throws SQLException {
 
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("");
+        List<Map<String, Object>> tracks = executeSQL("SELECT DISTINCT *\n" +
+                "FROM invoice_items\n" +
+                "    JOIN tracks on invoice_items.TrackId = tracks.TrackId\n" +
+                "WHERE invoice_items.Quantity > 1;");
         assertEquals(256, tracks.size());
 
         // HINT: join to tracks and invoice items and do a group by/having to get the right answer
         //       note: you will need to use the DISTINCT operator to get the right result!
-        List<Map<String, Object>> albums = executeSQL("");
+        List<Map<String, Object>> albums = executeSQL("SELECT *\n" +
+                "FROM tracks\n" +
+                "    JOIN invoice_items on tracks.TrackId = invoice_items.TrackId\n" +
+                "GROUP BY invoice_items.Quantity > 1;");
         assertEquals(166, albums.size());
     }
 
@@ -84,7 +101,12 @@ public class Homework3 extends DBTest {
      * */
     public void selectCustomersMeetingCriteria() throws SQLException {
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("" );
+        List<Map<String, Object>> tracks = executeSQL("SELECT Email\n" +
+                "FROM customers\n" +
+                "WHERE SupportRepId = (SELECT name\n" +
+                "                    FROM genres\n" +
+                "                    WHERE name=\"Rock\")\n" +
+                "AND SupportRepId=\"Jane Peacock\";" );
         assertEquals(21, tracks.size());
     }
 
