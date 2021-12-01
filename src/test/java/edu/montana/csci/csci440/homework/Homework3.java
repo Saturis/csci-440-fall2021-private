@@ -35,14 +35,14 @@ public class Homework3 extends DBTest {
             connection.setAutoCommit(false);
             PreparedStatement subtract = connection.prepareStatement("UPDATE tracks\n" +
                     "SET Milliseconds = ?\n" +
-                    "WHERE TrackId = ?;\n");
+                    "WHERE TrackId = ?;");
             subtract.setLong(1, (track1InitialTime - 10));
             subtract.setLong(2, 1);
             subtract.execute();
 
             PreparedStatement add = connection.prepareStatement("UPDATE tracks\n" +
                     "SET Milliseconds = ?\n" +
-                    "WHERE TrackId = ?;\n");
+                    "WHERE TrackId = ?;");
             subtract.setLong(1, (track2InitialTime + 10));
             subtract.setLong(2, 2);
             subtract.execute();
