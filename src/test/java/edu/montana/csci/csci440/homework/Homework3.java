@@ -98,9 +98,17 @@ public class Homework3 extends DBTest {
      * */
     public void selectCustomersMeetingCriteria() throws SQLException {
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("" );
+        List<Map<String, Object>> tracks = executeSQL("SELECT customers.Email\n" +
+                "    FROM customers\n" +
+                "        JOIN employees on customers.SupportRepId = employees.EmployeeId\n" +
+                "            WHERE employees.FirstName = \"Jane\" AND employees.LastName = \"Peacock\"\n" +
+                "                And customers.CustomerId IN (SELECT customers.customerId\n" +
+                "FROM customers\n" +
+                "    JOIN invoices on customers.CustomerId = invoices.CustomerId\n" +
+                "    JOIN invoice_items on invoices.InvoiceId = invoice_items.InvoiceId\n" +
+                "    JOIN tracks on invoice_items.TrackId = tracks.TrackId\n" +
+                "    JOIN genres on tracks.GenreId = genres.GenreId\n" +
+                "WHERE genres.Name = \"Rock\");" );
         assertEquals(21, tracks.size());
     }
-
-
 }
