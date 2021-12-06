@@ -33,6 +33,8 @@ public class Employee extends Model {
 
     public static List<Employee.SalesSummary> getSalesSummaries() {
         //TODO - a GROUP BY query to determine the sales (look at the invoices table), using the SalesSummary class
+        // join employees table to customers table, then customers to invoices
+        // need an aggrigate to sum up total sales and count number of sales
         return Collections.emptyList();
     }
 

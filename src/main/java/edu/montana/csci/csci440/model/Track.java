@@ -65,10 +65,11 @@ public class Track extends Model {
     public static Long count() {
         Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
         String s = redisClient.get(REDIS_CACHE_KEY);
+        Long cacheKeyS = Long.valueOf(s);
         if (s == null) {
             // do the query and cache the result
         } else { // need to invalidate this cache in a couple of places
-            // return the cached value
+            return cacheKeyS;
         }
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) as Count FROM tracks")) {

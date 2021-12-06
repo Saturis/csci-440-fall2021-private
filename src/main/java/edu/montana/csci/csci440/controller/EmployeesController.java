@@ -38,11 +38,11 @@ public class EmployeesController {
                     "employees", employees);
         });
 
-        /*get("/employees/tree", (request, response) -> {
+        get("/employees/tree", (request, response) -> {
             String employeeTree = EmployeeHelper.makeEmployeeTree();
             return Web.renderTemplate("templates/employees/tree.vm",
                     "employeeTree", employeeTree);
-        });*/
+        });
 
         get("/employees/sales", (request, response) -> {
             List<Employee.SalesSummary> salesInfo = Employee.getSalesSummaries();

@@ -99,7 +99,7 @@ public class Artist extends Model {
                 stmt.setString(1, this.getName());
                 stmt.setString(2, this.getName()); //T ODO need to get the previous name from the DB
                 stmt.setLong(3, this.getArtistId());
-                int updatedRows = stmt.executeUpdate(); //TODO use this number to determine if the update was successful or not
+                int updatedRows = stmt.executeUpdate(); //T ODO use this number to determine if the update was successful or not
                 if (updatedRows > 0) {
                     return true;
                 }
@@ -111,24 +111,6 @@ public class Artist extends Model {
             return false;
         }
     }
-
-    /*@Override
-    public boolean update() {
-        if (verify()) {
-            try (Connection conn = DB.connect();
-                 PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE artists SET Name=? WHERE ArtistId=? AND Name=?")) { //Has the name been changed, store the original name from the DB
-                stmt.setString(1, this.getName());
-                stmt.setLong(2, this.getArtistId()); // may not need this line
-                int updatedCount = stmt.executeUpdate();
-                return true;
-            } catch (SQLException sqlException) {
-                throw new RuntimeException(sqlException);
-            }
-        } else {
-            return false;
-        }
-    }*/
 
     @Override
     public boolean create() {
