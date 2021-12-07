@@ -158,6 +158,24 @@ public class Employee extends Model {
     }
     public Employee getBoss() {
         //TODO implement
+        /*Select E.EmployeeId, E.FirstName, E.LastName
+        From employees E
+        Where E.EmployeeID NOT IN (SELECT ReportsTo FROM employees WHERE ReportsTo IS NOT NULL);
+
+
+
+
+        Select E.EmployeeId, E.FirstName, E.LastName
+        From employees E
+        Where E.EmployeeID  IS NOT NULL;
+
+
+
+        SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City
+        FROM Customers A, Customers B
+        WHERE A.CustomerID <> B.CustomerID
+        AND A.City = B.City
+        ORDER BY A.City;*/
         return null;
     }
 
