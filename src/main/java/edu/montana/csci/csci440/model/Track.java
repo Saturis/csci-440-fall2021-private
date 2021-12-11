@@ -194,14 +194,22 @@ public class Track extends Model {
         // TODO implement more efficiently
         //  hint: cache on this model object
         Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
-        return redisClient.get(REDIS_CACHE_KEY + ".artistName");
+        String artistName = redisClient.get(REDIS_CACHE_KEY + ".artistName");
+        if (artistName != null){
+            return artistName;
+        }
+        return geta
     }
 
     public String getAlbumTitle() {
         // T ODO implement more efficiently
         //  hint: cache on this model object
         Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
-        return redisClient.get(REDIS_CACHE_KEY + ".albumTitle");
+        String albumTitle = redisClient.get(REDIS_CACHE_KEY + ".albumTitle");
+        if (albumTitle != null){
+            return albumTitle;}
+        else {
+            return getAlbum().getTitle();}
     }
 
     public static List<Track> advancedSearch(int page, int count,
