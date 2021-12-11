@@ -48,18 +48,24 @@ public class Track extends Model {
     }
 
     public static Track find(long i) {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE TrackId=?")) { //TODO: Get more elaborate and make only one connection to the DB.  We want to get the artist name as well. **JOIN**
+        try (Connection conn = DB.connect()){
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks JOIN albums on albums.AlbumId = tracks.AlbumId WHERE TrackId=?"); //T ODO: Get more elaborate and make only one connection to the DB.  We want to get the artist name as well. **JOIN**
             stmt.setLong(1, i);
             ResultSet results = stmt.executeQuery();
+
+            Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+            String s = redisClient.get(REDIS_CACHE_KEY); //"cs440-tracks-count-cache"
+            if (s == null && results.next()){
+                String albumTitleCacheKey = REDIS_CACHE_KEY + ".albumTitle";
+                redisClient.set(albumTitleCacheKey, results.getString("Title"));
+            }
             if (results.next()) {
                 return new Track(results);
             } else {
                 return null;
             }
         } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
+            throw new RuntimeException(sqlException);}
     }
 
     public static Long count() {
@@ -187,13 +193,15 @@ public class Track extends Model {
     public String getArtistName() {
         // TODO implement more efficiently
         //  hint: cache on this model object
-        return getAlbum().getArtist().getName();
+        Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+        return redisClient.get(REDIS_CACHE_KEY + ".artistName");
     }
 
     public String getAlbumTitle() {
-        // TODO implement more efficiently
+        // T ODO implement more efficiently
         //  hint: cache on this model object
-        return getAlbum().getTitle();
+        Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+        return redisClient.get(REDIS_CACHE_KEY + ".albumTitle");
     }
 
     public static List<Track> advancedSearch(int page, int count,
