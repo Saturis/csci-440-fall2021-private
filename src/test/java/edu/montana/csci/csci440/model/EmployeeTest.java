@@ -97,5 +97,4 @@ public class EmployeeTest extends DBTest {
         salesTotals = salesTotals.setScale(2, RoundingMode.HALF_DOWN);
         assertEquals(new BigDecimal("833.04"), salesTotals);
     }
-
 }

@@ -32,20 +32,40 @@ public class Employee extends Model {
     }
 
     public static List<Employee.SalesSummary> getSalesSummaries() {
-        //TODO - a GROUP BY query to determine the sales (look at the invoices table), using the SalesSummary class
+        //T ODO - a GROUP BY query to determine the sales (look at the invoices table), using the SalesSummary class
         // join employees table to customers table, then customers to invoices
         // need an aggrigate to sum up total sales and count number of sales
-        return Collections.emptyList();
+        try (Connection conn = DB.connect()){
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT employees.*,\n" +
+                             "       SUM(invoices.Total) as SalesTotal,\n" +
+                             "       COUNT(invoices.InvoiceId) as SalesCount\n" +
+                             "FROM customers\n" +
+                             "    JOIN employees on customers.SupportRepId = employees.EmployeeId\n" +
+                             "    JOIN invoices on customers.CustomerId = invoices.CustomerId\n" +
+                             "GROUP BY employees.EmployeeId");
+            ResultSet results = stmt.executeQuery();
+            LinkedList<Employee.SalesSummary> sales = new LinkedList<>();
+            while (results.next()){
+                sales.add(new Employee.SalesSummary(results));
+            }
+            return sales;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     @Override
-    public boolean verify() {
+    public boolean verify() { // expect a first name, last name and valid email
         _errors.clear(); // clear any existing errors
         if (firstName == null || "".equals(firstName)) {
             addError("FirstName can't be null or blank!");
         }
         if (lastName == null || "".equals(lastName)) {
             addError("LastName can't be null!");
+        }
+        if (email == null || !email.contains("@")) {
+            addError("Email can't be null and must contain the @ symbol!");
         }
         return !hasErrors();
     }
@@ -157,26 +177,17 @@ public class Employee extends Model {
         }
     }
     public Employee getBoss() {
-        //TODO implement
-        /*Select E.EmployeeId, E.FirstName, E.LastName
-        From employees E
-        Where E.EmployeeID NOT IN (SELECT ReportsTo FROM employees WHERE ReportsTo IS NOT NULL);
-
-
-
-
-        Select E.EmployeeId, E.FirstName, E.LastName
-        From employees E
-        Where E.EmployeeID  IS NOT NULL;
-
-
-
-        SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City
-        FROM Customers A, Customers B
-        WHERE A.CustomerID <> B.CustomerID
-        AND A.City = B.City
-        ORDER BY A.City;*/
-        return null;
+        //T ODO implement
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM employees WHERE EmployeeId = ?"
+             )) {
+            stmt.setLong(1, this.getReportsTo());
+            ResultSet results = stmt.executeQuery();
+            return new Employee(results);
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     public static List<Employee> all() {
@@ -236,8 +247,8 @@ public class Employee extends Model {
         title = programmer;
     }
 
-    public void setReportsTo(Employee employee) {
-        // TODO implement
+    public void setReportsTo(Employee boss) {
+        this.reportsTo = boss.employeeId;
     }
 
     public static class SalesSummary {
