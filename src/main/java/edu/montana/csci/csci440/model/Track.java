@@ -53,8 +53,8 @@ public class Track extends Model {
             stmt.setLong(1, i);
             ResultSet results = stmt.executeQuery();
 
-            Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
-            String s = redisClient.get(REDIS_CACHE_KEY); //"cs440-tracks-count-cache"
+            Jedis redisClient = new Jedis();
+            String s = redisClient.get(REDIS_CACHE_KEY);
             if (results.next()) {
                 if (s == null){
                     String albumTitleCacheKey = REDIS_CACHE_KEY + ".albumTitle";
@@ -71,7 +71,7 @@ public class Track extends Model {
     }
 
     public static Long count() {
-        Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+        Jedis redisClient = new Jedis();
         String s = redisClient.get(REDIS_CACHE_KEY + ".count");
         Long cacheKeyS;
         if (s == null) {
@@ -207,9 +207,7 @@ public class Track extends Model {
     }
 
     public String getArtistName() {
-        // T ODO implement more efficiently
-        //  hint: cache on this model object
-        Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+        Jedis redisClient = new Jedis();
         String artistName = redisClient.get(REDIS_CACHE_KEY + ".artistName");
         if (artistName != null){
             return artistName;
@@ -218,9 +216,7 @@ public class Track extends Model {
     }
 
     public String getAlbumTitle() {
-        // T ODO implement more efficiently
-        //  hint: cache on this model object
-        Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+        Jedis redisClient = new Jedis();
         String albumTitle = redisClient.get(REDIS_CACHE_KEY + ".albumTitle");
         if (albumTitle != null){
             return albumTitle;}

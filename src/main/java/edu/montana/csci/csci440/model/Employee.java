@@ -19,7 +19,6 @@ public class Employee extends Model {
 
     public Employee()  {
         // new employee for insert
-
     }
 
     private Employee(ResultSet results) throws SQLException {
@@ -32,9 +31,6 @@ public class Employee extends Model {
     }
 
     public static List<Employee.SalesSummary> getSalesSummaries() {
-        //T ODO - a GROUP BY query to determine the sales (look at the invoices table), using the SalesSummary class
-        // join employees table to customers table, then customers to invoices
-        // need an aggrigate to sum up total sales and count number of sales
         try (Connection conn = DB.connect()){
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT employees.*,\n" +
@@ -56,7 +52,7 @@ public class Employee extends Model {
     }
 
     @Override
-    public boolean verify() { // expect a first name, last name and valid email
+    public boolean verify() {
         _errors.clear(); // clear any existing errors
         if (firstName == null || "".equals(firstName)) {
             addError("FirstName can't be null or blank!");
@@ -194,7 +190,7 @@ public class Employee extends Model {
         return all(0, Integer.MAX_VALUE);
     }
 
-    public static List<Employee> all(int page, int count) {//T ODO implement paging, 8 employees divided by number per page to get total pages
+    public static List<Employee> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT * FROM employees LIMIT ? OFFSET ?"
@@ -212,7 +208,6 @@ public class Employee extends Model {
         }
     }
 
-    //T ODO
     public static Employee findByEmail(String newEmailAddress) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees WHERE Email=?")) {

@@ -98,7 +98,7 @@ public class Artist extends Model {
                          "UPDATE artists SET Name=? WHERE ArtistId=?")) {
                 stmt.setString(1, this.getName());
                 stmt.setLong(2, this.getArtistId());
-                int updatedRows = stmt.executeUpdate(); //T ODO use this number to determine if the update was successful or not
+                int updatedRows = stmt.executeUpdate();
                 if (updatedRows > 0) {
                     return true;
                 }

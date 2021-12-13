@@ -24,7 +24,6 @@ public class Playlist extends Model {
     }
 
     public List<Track> getTracks(){
-        // T O D O implement, order by track name
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT *\n" +
