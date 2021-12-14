@@ -80,13 +80,13 @@ public class EmployeeTest extends DBTest {
         assertEquals(emp.getEmployeeId(), found.getEmployeeId());
     }
 
-    /*@Test
+    @Test
     void testEmployeeHelperOnlyIssuesOneQuery(){
         long connectionCount = DB.getConnectionCount();
-        //String str = EmployeeHelper.makeEmployeeTree();
+        String str = EmployeeHelper.makeEmployeeTree();
         assertNotNull(str);
         assertTrue( DB.getConnectionCount() - connectionCount  <= 2 );
-    }*/
+    }
 
     @Test
     void testEmployeeSalesReport() {

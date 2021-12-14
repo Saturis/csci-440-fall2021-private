@@ -173,7 +173,6 @@ public class Employee extends Model {
         }
     }
     public Employee getBoss() {
-        //T ODO implement
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT * FROM employees WHERE EmployeeId = ?"

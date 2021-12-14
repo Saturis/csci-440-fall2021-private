@@ -25,6 +25,12 @@ public class EmployeeHelper {
             Long reportsTo = currentEmployee.getReportsTo();
             List<Employee> employees = employeeMap.get(reportsTo);
             // todo what if first employee (if else)
+            if (reportsTo == null){
+                employees.add(currentEmployee);
+            }
+            else {
+                employees.add(currentEmployee);
+            }
         }
         return "<ul>" + makeTree(employee, employeeMap) + "</ul>";
     }

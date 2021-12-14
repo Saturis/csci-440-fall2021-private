@@ -15,6 +15,7 @@ public class Artist extends Model {
 
     Long artistId;
     String name;
+    String oldName;
 
     public Artist() {
     }
@@ -38,9 +39,10 @@ public class Artist extends Model {
 
     public String getName() {
         return name;
-    }  //TODO: implement Optimistic Concurrency for Name (double check this for sure) Lecture 23 43:00 mins in
+    }
 
     public void setName(String name) {
+        this.oldName = this.name;
         this.name = name;
     }
 
@@ -95,14 +97,15 @@ public class Artist extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE artists SET Name=? WHERE ArtistId=?")) {
+                         "UPDATE artists SET Name=? WHERE ArtistId=? AND Name=?")) {
                 stmt.setString(1, this.getName());
                 stmt.setLong(2, this.getArtistId());
+                stmt.setString(3, this.oldName);
                 int updatedRows = stmt.executeUpdate();
                 if (updatedRows > 0) {
                     return true;
                 }
-                return true;
+                return false;
             } catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
             }
