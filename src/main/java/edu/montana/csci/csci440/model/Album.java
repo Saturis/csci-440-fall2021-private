@@ -95,9 +95,23 @@ public class Album extends Model {
     }
 
     public static List<Album> getForArtist(Long artistId) {
-        // TODO implement
-        return Collections.emptyList();
+        // T ODO implement
+        try (Connection conn = DB.connect();
+        PreparedStatement stmt = conn.prepareStatement("SELECT AlbumId, Title\n" +
+                "FROM albums\n" +
+                "WHERE ArtistId = ?")) {
+            stmt.setLong(1, artistId);
+            ResultSet results = stmt.executeQuery();
+            List<Album> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Album(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException){
+            throw new RuntimeException(sqlException);
+        }
     }
+
     @Override
     public boolean verify() {
         _errors.clear(); // clear any existing errors

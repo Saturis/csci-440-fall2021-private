@@ -18,6 +18,14 @@ public class InvoiceItem extends Model {
     BigDecimal unitPrice;
     Long quantity;
 
+    public InvoiceItem(ResultSet results) throws SQLException {
+        invoiceLineId = results.getLong("InvoiceLineId");
+        invoiceId = results.getLong("InvoiceID");
+        trackId = results.getLong("TrackId");
+        unitPrice = results.getBigDecimal("UnitPrice");
+        quantity = results.getLong("Quantity");
+    }
+
     public Track getTrack() {
         return null;
     }

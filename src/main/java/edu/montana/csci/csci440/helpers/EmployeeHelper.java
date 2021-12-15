@@ -16,40 +16,34 @@ public class EmployeeHelper {
 
     public static String makeEmployeeTree() {
         // T ODO, change this to use a single query operation to get all employees
-        Employee employee = Employee.find(1); // root employee
+        Employee manager = null; // root employee
         // Employee employee = (Employee) Employee.all();
         // and use this data structure to maintain reference information needed to build the tree structure
         Map<Long, List<Employee>> employeeMap = new HashMap<>();
         List<Employee> allEmployees = Employee.all();
         for (Employee currentEmployee : allEmployees) {
             Long reportsTo = currentEmployee.getReportsTo();
-            List<Employee> employees = employeeMap.get(reportsTo);
-            // todo what if first employee (if else)
-            if (reportsTo == null){
-                employees.add(currentEmployee);
+            //for all employees we will get the reportsto value
+                    //and then check
+            if (reportsTo == 0){
+                manager = currentEmployee;
             }
-            else {
-                employees.add(currentEmployee);
+
+            List<Employee> subordinates = new LinkedList<>();
+            for (Employee person : allEmployees) {
+                if (person.getReportsTo() == currentEmployee.getEmployeeId()) {
+                    subordinates.add(person);
+                }
             }
+            employeeMap.put(currentEmployee.getEmployeeId(), subordinates);
         }
-        return "<ul>" + makeTree(employee, employeeMap) + "</ul>";
+        return "<ul>" + makeTree(manager, employeeMap) + "</ul>";
     }
 
     // TODO - currently this method just uses the employee.getReports() function, which
     //  issues a query.  Change that to use the employeeMap variable instead
     public static String makeTree(Employee employee, Map<Long, List<Employee>> employeeMap) {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM employees"
-             )) {
-            ResultSet results = stmt.executeQuery();
-            List<Employee> resultList = new LinkedList<>();
-            while (results.next()) {
-                //employeeMap.put();//TODO: what goes in the put?
-            }
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
+
         String list = "<li><a href='/employees" + employee.getEmployeeId() + "'>"
                 + employee.getEmail() + "</a><ul>";
         //List<Employee> reports = employee.getReports();

@@ -23,7 +23,7 @@ public class Invoice extends Model {
         // new employee for insert
     }
 
-    private Invoice(ResultSet results) throws SQLException {
+    public Invoice(ResultSet results) throws SQLException {
         billingAddress = results.getString("BillingAddress");
         billingState = results.getString("BillingState");
         billingCountry = results.getString("BillingCountry");
@@ -34,8 +34,21 @@ public class Invoice extends Model {
     }
 
     public List<InvoiceItem> getInvoiceItems(){
-        //TODO implement
-        return Collections.emptyList();
+        //T ODO implement
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT  InvoiceLineId, TrackId, UnitPrice, Quantity\n" +
+                     "FROM invoice_items\n" +
+                     "WHERE InvoiceId = ?")) {
+            stmt.setLong(1, getInvoiceId());
+            ResultSet results = stmt.executeQuery();
+            List<InvoiceItem> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new InvoiceItem(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException){
+            throw new RuntimeException(sqlException);
+        }
     }
     public Customer getCustomer() {
         return null;
