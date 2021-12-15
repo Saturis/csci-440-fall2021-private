@@ -15,9 +15,16 @@ public class Homework2 extends DBTest {
      * Create a view tracksPlus to display the artist, song title, album, and genre for all tracks.
      */
     public void createTracksPlusView(){
-        //T ODO fill this in
-        executeDDL("CREATE VIEW tracksPlus");
-
+        executeDDL("CREATE VIEW tracksPlus AS\n" +
+                "SELECT TrackId as TrackId,\n" +
+                "       artists.Name as ArtistName,\n" +
+                "       tracks.Name as TrackTitle,\n" +
+                "       albums.Title as AlbumTitle,\n" +
+                "       genres.Name as GenreName\n" +
+                "FROM tracks\n" +
+                "    JOIN albums on albums.AlbumId = tracks.AlbumId\n" +
+                "    JOIN artists on artists.ArtistId = albums.ArtistId\n" +
+                "    JOIN genres on genres.GenreId = tracks.GenreId;");
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
         assertEquals(3503, results.size());
         assertEquals("Rock", results.get(0).get("GenreName"));
@@ -35,10 +42,19 @@ public class Homework2 extends DBTest {
      * Create a table grammy_category
      */
     public void createGrammyInfoTable(){
-        //T ODO fill these in
-        executeDDL("create table grammy_categories");
-        executeDDL("create table grammy_infos");
+        executeDDL("CREATE TABLE grammy_categories( " +
+                "    GrammyCategoryId INTEGER PRIMARY KEY, " +
+                "    Name VARCHAR " +
+                ");");
 
+        executeDDL("CREATE TABLE grammy_infos( " +
+                "    GrammyInfosId INTEGER PRIMARY KEY, " +
+                "    ArtistId INTEGER, " +
+                "    AlbumId INTEGER, " +
+                "    TrackId INTEGER, " +
+                "    GrammyCategoryId INTEGER, " +
+                "    Status VARCHAR \n" +
+                ");");
         // TEST CODE
         executeUpdate("INSERT INTO grammy_categories(Name) VALUES ('Greatest Ever');");
         Object categoryId = executeSQL("SELECT GrammyCategoryId FROM grammy_categories").get(0).get("GrammyCategoryId");
@@ -60,9 +76,12 @@ public class Homework2 extends DBTest {
     public void bulkInsertGenres(){
         Integer before = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
 
-        //T ODO fill this in
-        executeUpdate("INSERT");
-
+        executeUpdate("INSERT INTO genres (Name) " +
+                "VALUES ('Black Metal'), " +
+                "        ('Electro Swing'), " +
+                "        ('Techno'), " +
+                "        ('Doom Metal'), " +
+                "        ('Symphonic Metal');");
         Integer after = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
         assertEquals(before + 5, after);
     }
