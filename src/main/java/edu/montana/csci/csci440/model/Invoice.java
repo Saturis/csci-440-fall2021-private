@@ -23,18 +23,32 @@ public class Invoice extends Model {
         // new employee for insert
     }
 
-    private Invoice(ResultSet results) throws SQLException {
+    public Invoice(ResultSet results) throws SQLException {
         billingAddress = results.getString("BillingAddress");
         billingState = results.getString("BillingState");
         billingCountry = results.getString("BillingCountry");
         billingPostalCode = results.getString("BillingPostalCode");
         total = results.getBigDecimal("Total");
         invoiceId = results.getLong("InvoiceId");
+        billingCity = results.getString("BillingCity");
     }
 
     public List<InvoiceItem> getInvoiceItems(){
-        //TODO implement
-        return Collections.emptyList();
+        //T ODO implement
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT  InvoiceLineId, TrackId, UnitPrice, Quantity\n" +
+                     "FROM invoice_items\n" +
+                     "WHERE InvoiceId = ?")) {
+            stmt.setLong(1, getInvoiceId());
+            ResultSet results = stmt.executeQuery();
+            List<InvoiceItem> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new InvoiceItem(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException){
+            throw new RuntimeException(sqlException);
+        }
     }
     public Customer getCustomer() {
         return null;
@@ -99,9 +113,10 @@ public class Invoice extends Model {
     public static List<Invoice> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM invoices LIMIT ?"
+                     "SELECT * FROM invoices LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page - 1) * count);
             ResultSet results = stmt.executeQuery();
             List<Invoice> resultList = new LinkedList<>();
             while (results.next()) {
@@ -123,6 +138,71 @@ public class Invoice extends Model {
             } else {
                 return null;
             }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public boolean verify() {
+        _errors.clear(); // clear any existing errors
+        if (total == null || "".equals(total)) {
+            addError("Invoice Total can't be null or blank!");
+        }
+        return !hasErrors();
+    }
+
+    @Override
+    public boolean update() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE employees SET BillingAddress=?, BillingCity=?, BillingState=?, BillingCountry=?, BillingPostalCode=? WHERE InvoiceId=?")) {
+                stmt.setString(1, this.getBillingAddress());
+                stmt.setString(2, this.getBillingCity());
+                stmt.setString(3, this.getBillingState());
+                stmt.setString(4, this.getBillingCountry());
+                stmt.setString(5, this.getBillingPostalCode());
+                stmt.setLong(6, this.getInvoiceId());
+                stmt.executeUpdate();
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean create() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "INSERT INTO invoices (BillingAddress, BillingCity, BillingState, BillingCountry, BillingPostalCode) VALUES (?, ?, ?, ?, ?)")) {
+                stmt.setString(1, this.getBillingAddress());
+                stmt.setString(2, this.getBillingCity());
+                stmt.setString(3, this.getBillingState());
+                stmt.setString(4, this.getBillingCountry());
+                stmt.setString(5, this.getBillingPostalCode());
+                stmt.executeUpdate();
+                invoiceId = DB.getLastID(conn);
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void delete() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "DELETE FROM invoices WHERE InvoiceId=?")) {
+            stmt.setLong(1, this.getInvoiceId());
+            stmt.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }

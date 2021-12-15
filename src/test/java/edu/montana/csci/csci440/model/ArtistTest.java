@@ -3,6 +3,7 @@ package edu.montana.csci.csci440.model;
 import edu.montana.csci.csci440.DBTest;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,4 +77,13 @@ public class ArtistTest extends DBTest {
         assertEquals(newName, Artist.find(1).getName());
     }
 
+    @Test
+    void testImplementsUpdate() throws NoSuchMethodException {
+        Class<Artist> artistClass = Artist.class;
+        Method update = artistClass.getMethod("update");
+        assertNotNull(update);
+        Class<?> declClass = update.getDeclaringClass();
+        System.out.println(declClass);
+        assertEquals(artistClass, declClass);
+    }
 }

@@ -19,6 +19,7 @@ public class AlbumsController {
         post("/albums/new", (req, resp) -> {
             Album album = new Album();
             Web.putValuesInto(album, "Title");
+            String artistId = req.queryParams("ArtistId");
             if (album.create()) {
                 Web.message("Created A Album!");
                 return Web.redirect("/albums/" + album.getAlbumId());
@@ -28,6 +29,18 @@ public class AlbumsController {
                         "album", album);
             }
         });
+        /*        post("/employees/new", (req, resp) -> {
+            Employee emp = new Employee();
+            Web.putValuesInto(emp, "FirstName", "LastName");
+            if (emp.create()) {
+                Web.message("Created An Employee!");
+                return Web.redirect("/employees/" + emp.getEmployeeId());
+            } else {
+                Web.error("Could Not Create An Employee!");
+                return Web.renderTemplate("templates/employees/new.vm",
+                        "employee", emp);
+            }
+        });*/
 
         /* READ */
         get("/albums", (req, resp) -> {

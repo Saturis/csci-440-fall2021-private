@@ -42,8 +42,5 @@ class Server {
         EmployeesController.init();
         CustomersController.init();
         InvoicesController.init();
-
-
     }
-
 }

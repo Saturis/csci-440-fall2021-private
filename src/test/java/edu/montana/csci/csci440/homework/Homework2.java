@@ -15,7 +15,6 @@ public class Homework2 extends DBTest {
      * Create a view tracksPlus to display the artist, song title, album, and genre for all tracks.
      */
     public void createTracksPlusView(){
-        //TODO fill this in
         executeDDL("CREATE VIEW tracksPlus AS\n" +
                 "SELECT TrackId as TrackId,\n" +
                 "       artists.Name as ArtistName,\n" +
@@ -26,7 +25,6 @@ public class Homework2 extends DBTest {
                 "    JOIN albums on albums.AlbumId = tracks.AlbumId\n" +
                 "    JOIN artists on artists.ArtistId = albums.ArtistId\n" +
                 "    JOIN genres on genres.GenreId = tracks.GenreId;");
-
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
         assertEquals(3503, results.size());
         assertEquals("Rock", results.get(0).get("GenreName"));
@@ -44,7 +42,6 @@ public class Homework2 extends DBTest {
      * Create a table grammy_category
      */
     public void createGrammyInfoTable(){
-        //TODO fill these in
         executeDDL("CREATE TABLE grammy_categories( " +
                 "    GrammyCategoryId INTEGER PRIMARY KEY, " +
                 "    Name VARCHAR " +
@@ -58,7 +55,6 @@ public class Homework2 extends DBTest {
                 "    GrammyCategoryId INTEGER, " +
                 "    Status VARCHAR \n" +
                 ");");
-
         // TEST CODE
         executeUpdate("INSERT INTO grammy_categories(Name) VALUES ('Greatest Ever');");
         Object categoryId = executeSQL("SELECT GrammyCategoryId FROM grammy_categories").get(0).get("GrammyCategoryId");
@@ -80,14 +76,12 @@ public class Homework2 extends DBTest {
     public void bulkInsertGenres(){
         Integer before = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
 
-        //TODO fill this in
         executeUpdate("INSERT INTO genres (Name) " +
                 "VALUES ('Black Metal'), " +
                 "        ('Electro Swing'), " +
                 "        ('Techno'), " +
                 "        ('Doom Metal'), " +
                 "        ('Symphonic Metal');");
-
         Integer after = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
         assertEquals(before + 5, after);
     }

@@ -54,3 +54,9 @@ CREATE TRIGGER denormalize_invoice_line_total
         SET TotalAmount = new.UnitPrice * new.Quantity
         WHERE InvoiceLineId = new.InvoiceLineId;
     END;
+
+
+
+SELECT * FROM tracks
+                  LIMIT 10
+OFFSET 10;

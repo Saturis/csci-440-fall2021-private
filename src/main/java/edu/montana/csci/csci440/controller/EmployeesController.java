@@ -32,7 +32,8 @@ public class EmployeesController {
 
         /* READ */
         get("/employees", (req, resp) -> {
-            List<Employee> employees = Employee.all(1, Web.PAGE_SIZE);
+            String count = req.queryParams("count");
+            List<Employee> employees = Employee.all(1, Integer.parseInt(count));
             return Web.renderTemplate("templates/employees/index.vm",
                     "employees", employees);
         });
